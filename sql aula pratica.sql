@@ -16,22 +16,6 @@ CREATE TABLE funcionarios (
   FOREIGN KEY (cod_cidade) REFERENCES cidades (cod_cidade)
 );
 
-
-insert into cidades values (1, 'Florianopolis', 'SC');
-insert into cidades values (2, 'Porto Alegre', 'RS');
-insert into cidades values (3, 'Gramado', 'RS');
-
-insert into funcionarios values (300, 'Eduardo', 25, 3000, 1);
-insert into funcionarios values (320, 'Eduardo', 25, 3001, 1);
-insert into funcionarios values (400, 'Eduarda', 30, 1000, 1);
-insert into funcionarios values (500, 'Rodrigo', 40, 15000, 1);
-
-select nome from funcionarios where nome like 'Edu%';
-select nome from funcionarios where nome like 'edu%';
-select nome from funcionarios where nome ilike 'edu%';
-select nome from funcionarios where nome like '%ar%';
-
-
 CREATE TABLE ambulatorios (
   numeroA integer PRIMARY KEY,
   andar integer,
@@ -49,6 +33,17 @@ CREATE TABLE medicos (
   FOREIGN KEY (numeroA) REFERENCES ambulatorios (numeroA)
 );
 
+-- insertions
+
+insert into cidades values (1, 'Florianopolis', 'SC');
+insert into cidades values (2, 'Porto Alegre', 'RS');
+insert into cidades values (3, 'Gramado', 'RS');
+
+insert into funcionarios values (300, 'Eduardo', 25, 3000, 1);
+insert into funcionarios values (320, 'Eduardo', 25, 3001, 1);
+insert into funcionarios values (400, 'Eduarda', 30, 1000, 1);
+insert into funcionarios values (500, 'Rodrigo', 40, 15000, 1);
+insert into funcionarios values (501, 'Rodrigo', 40, 15000, 2);
 
 insert into ambulatorios values(10, 5, 100);
 insert into ambulatorios values(20, 5, 50);
@@ -58,6 +53,15 @@ insert into medicos values (111, 'Mario', 65, 1, 'cardiologista',10);
 insert into medicos values (46, 'Nazareno', 33, 1, 'Pneumologista',20);
 insert into medicos values (79, 'Antoine', 70, 2, 'Ortopedista',10);
 insert into medicos values (444, 'Ricardo', 60, 3, 'cardiologista',10);
+insert into medicos values (244, 'Rodrigo', 60, 3, 'cardiologista',10);
+
+
+-- queries
+
+select nome from funcionarios where nome like 'Edu%';
+select nome from funcionarios where nome like 'edu%';
+select nome from funcionarios where nome ilike 'edu%';
+select nome from funcionarios where nome like '%ar%';
 
 select nome from medicos
 intersect
@@ -78,4 +82,21 @@ select count (*) from medicos;
 select cidades.descricao, count(medicos.*) as quantidadeDeMedicos
   from medicos, cidades
   where medicos.cod_cidade = cidades.cod_cidade
-  group by cidades.descricao;
+    group by cidades.descricao;
+
+select cidades.descricao, sum(funcionarios.salario)
+  from cidades, funcionarios
+  where funcionarios.cod_cidade = cidades.cod_cidade
+    group by cidades.descricao
+    having sum (funcionarios.salario) > 20000;
+
+
+-- this one will fail :arrow_down:
+select cidades.descricao, sum(funcionarios.salario)
+  from cidades, funcionarios
+  where funcionarios.cod_cidade = cidades.cod_cidade
+    and sum (funcionarios.salario) > 5000
+    group by cidades.descricao;
+
+select nome from funcionarios
+  where nome in (select nome from medicos);
