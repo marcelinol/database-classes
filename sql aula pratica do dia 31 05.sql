@@ -224,8 +224,13 @@ select medico.crm, consulta.data, paciente.rg from medico, consulta, paciente
 */
 
 -- 9) buscar os números dos ambulatórios, exceto aqueles do segundo e quarto andares, que suportam mais de 50 pacientes
-select numeroA from ambulatorio
+explain select numeroA from ambulatorio
   where andar not in (2,4)
+  and capacidade > 50;
+
+explain select numeroA from ambulatorio
+  where andar <> 2
+  and andar <> 4
   and capacidade > 50;
 
 /*
