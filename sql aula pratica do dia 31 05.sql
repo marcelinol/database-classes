@@ -113,20 +113,211 @@ insert into consulta values(46, 1500, '05/01/2016', '05/01/2016 11:00', 2);
 -- EXERCICIOS
 
 -- 1) buscar os dados dos pacientes que estão com sarampo
+select paciente.* from paciente, consulta, doenca where paciente.rg = consulta.rg and doenca.descricao = 'sarampo' and consulta.codDoenca = doenca.codDoenca;
+
+/*
+rg  |    nome     | idade | codcidade
+------+-------------+-------+-----------
+300 | Eduardo     |    25 |         1
+1500 | Rodriguinho |    30 |         2
+1500 | Rodriguinho |    30 |         2
+(3 rows)
+*/
 
 -- 2) buscar os dados dos médicos ortopedistas com mais de 40 anos
+select medico.* from medico, especialidade where especialidade.nome = 'Ortopedista' and medico.codEsp = especialidade.codEsp and idade > 40;
+
+/*
+crm |  nome   | idade | codcidade | codesp | numeroa
+-----+---------+-------+-----------+--------+---------
+ 79 | Antoine |    70 |         2 |      3 |      10
+*/
+
 -- 3) recuperar a especialidade e o numero total de médicos de cada especialidade
+select especialidade.nome, count(medico.*) as medicosPorEspecialidades
+  from especialidade, medico
+  where medico.codEsp = especialidade.codEsp
+  group by especialidade.nome;
+
+/*
+  nome      | medicosporespecialidades
+---------------+--------------------------
+Pneumologista |                        1
+cardiologista |                        3
+Ortopedista   |                        1
+(3 rows)
+*/
+
 -- 4) recupere os nomes dos médicos que não tem consultas na tabela de consultas
+select nome from medico
+  where crm not in (select crm from consulta);
+
+/*
+  nome
+---------
+Antoine
+Ricardo
+Rodrigo
+(3 rows)
+*/
+
 -- 5) buscar os dados das consultas, exceto aquelas marcadas para os médicos com CRM 46 e 79
--- 6) buscar os dados dos ambulatórios do quarto andar que ou tenham capacidade igual a 50 ou tenham número superior a 10
+select consulta.* from consulta, medico
+  where medico.crm not in (46, 79)
+  and consulta.crm = medico.crm;
+
+/*
+crm |  rg  |    data    |        hora         | coddoenca
+-----+------+------------+---------------------+-----------
+111 |  300 | 2016-01-01 | 2016-01-01 10:00:00 |         1
+111 | 1400 | 2016-01-01 | 2016-01-01 10:30:00 |         2
+111 | 1500 | 2016-01-01 | 2016-01-01 11:00:00 |         1
+111 | 1500 | 2016-05-01 | 2016-05-01 11:00:00 |         1
+(4 rows)
+*/
+
+-- 6) buscar os dados dos ambulatórios do quinto andar que ou tenham capacidade igual a 50 ou tenham número superior a 10
+select * from ambulatorio
+  where ambulatorio.andar = 5
+  and (
+    ambulatorio.capacidade = 50
+    or ambulatorio.numeroA > 10
+  );
+
+/*
+numeroa | andar | capacidade
+---------+-------+------------
+     20 |     5 |         50
+     30 |     5 |        300
+(2 rows)
+*/
+
 -- 7) buscar o nome dos médicos que têm consulta marcada e as datas das suas consultas, ordenando o nome dos médicos em ordem alfabética
--- 8) buscar o CRM dos médicos e as datas das consultas para os pacientes com RG 122 e 725
+select medico.nome, consulta.data from medico, consulta
+  where medico.crm = consulta.crm
+  order by medico.nome;
+
+/*
+nome   |    data
+----------+------------
+Mario    | 2016-01-01
+Mario    | 2016-01-01
+Mario    | 2016-01-01
+Mario    | 2016-05-01
+Nazareno | 2016-05-01
+(5 rows)
+*/
+
+-- 8) buscar o CRM dos médicos e as datas das consultas para os pacientes com RG 300 e 1500 (ALTEREI OS RGS PARA BATER COM MEUS DADOS)
+select medico.crm, consulta.data, paciente.rg from medico, consulta, paciente
+  where medico.crm = consulta.crm
+  and paciente.rg = consulta.rg
+  and paciente.rg in (300,1500);
+
+/* crm |    data    |  rg
+-----+------------+------
+ 111 | 2016-01-01 |  300
+ 111 | 2016-01-01 | 1500
+ 111 | 2016-05-01 | 1500
+  46 | 2016-05-01 | 1500
+(4 rows)
+*/
+
 -- 9) buscar os números dos ambulatórios, exceto aqueles do segundo e quarto andares, que suportam mais de 50 pacientes
+select numeroA from ambulatorio
+  where andar not in (2,4)
+  and capacidade > 50;
+
+/*
+numeroa
+---------
+     10
+     30
+(2 rows)
+*/
+
 -- 10) buscar o número e a capacidade dos ambulatórios do quinto andar e o nome dos médicos que atendem neles
+select ambulatorio.numeroA, ambulatorio.capacidade, medico.nome from ambulatorio, medico
+  where medico.numeroA = ambulatorio.numeroA
+  and ambulatorio.andar = 5;
+
+/*
+numeroa | capacidade |   nome
+---------+------------+----------
+     10 |        100 | Mario
+     20 |         50 | Nazareno
+     10 |        100 | Antoine
+     10 |        100 | Ricardo
+     10 |        100 | Rodrigo
+(5 rows)
+*/
+
 -- 11) buscar o nome dos médicos e o nome dos seus pacientes com consulta marcada, assim como a data destas consultas
+select medico.nome, paciente.nome, consulta.data from medico, paciente, consulta
+  where medico.crm = consulta.crm
+  and paciente.rg = consulta.rg;
+
+/*
+nome   |    nome     |    data
+----------+-------------+------------
+Mario    | Eduardo     | 2016-01-01
+Mario    | Eduardinha  | 2016-01-01
+Mario    | Rodriguinho | 2016-01-01
+Mario    | Rodriguinho | 2016-05-01
+Nazareno | Rodriguinho | 2016-05-01
+(5 rows)
+*/
+
 -- 12) buscar os nomes dos pacientes, com consultas marcadas para os médicos João Carlos Santos ou Maria Souza, que estão com pneumonia
+select paciente.nome from paciente, consulta, medico, doenca
+  where (medico.nome = 'João Carlos Santos' or medico.nome = 'Maria Souza')
+  and consulta.crm = medico.crm
+  and doenca.descricao = 'pneumonia'
+  and doenca.codDoenca = consulta.codDoenca;
+
+/*
+nome
+------
+(0 rows)
+*/
+
 -- 13) buscar os nomes e idade dos médicos, pacientes e funcionários que residem em Florianópolis
+select medico.nome, medico.idade from medico, cidade
+  where cidade.descricao = 'Florianopolis'
+  and medico.codCidade = cidade.codCidade
+  UNION
+select funcionario.nome, funcionario.idade from funcionario, cidade
+  where cidade.descricao = 'Florianopolis'
+  and funcionario.codCidade = cidade.codCidade
+  UNION
+select paciente.nome, paciente.idade from paciente, cidade
+  where cidade.descricao = 'Florianopolis'
+  and paciente.codCidade = cidade.codCidade;
+
+/*
+nome    | idade
+------------+-------
+Eduardo    |    25
+Mario      |    65
+Rodrigo    |    40
+Eduarda    |    30
+Eduardinho |    18
+Eduardinha |    22
+Nazareno   |    33
+(7 rows)
+*/
+
 -- 14) buscar os nomes e RGs dos funcionários que recebem salários abaixo de R$ 1300,00 e que não estão internados como pacientes
+select nome, rg from funcionario
+  where salario < 1300
+  and rg not in (select rg from paciente);
+
+/*
+nome   | rg
+---------+-----
+Eduarda | 400
+(1 row)
+*/
 -- 15) buscar os números dos ambulatórios onde nenhum médico fornece atendimento
 -- 16) buscar os nomes e os RGs dos funcionários que estão internados como pacientes
 -- 17) buscar os nomes dos funcionários que nunca consultaram
