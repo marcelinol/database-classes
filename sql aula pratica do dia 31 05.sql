@@ -107,6 +107,9 @@ insert into consulta values(111, 1400, '01/01/2016', '01/01/2016 10:30', 2);
 insert into consulta values(111, 1500, '01/01/2016', '01/01/2016 11:00', 1);
 insert into consulta values(111, 1500, '05/01/2016', '05/01/2016 11:00', 1);
 insert into consulta values(46, 1500, '05/01/2016', '05/01/2016 11:00', 2);
+insert into consulta values(111, 300, '05/21/2015','05/21/2015 10:00', 2);
+insert into consulta values(111, 1500, '10/22/2015','10/22/2015 10:00',2);
+insert into consulta values(46, 300, '08/25/2015','08/25/2015 10:00',2);
 
 
 
