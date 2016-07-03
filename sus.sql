@@ -29,20 +29,20 @@ CREATE TABLE Logradouro (
 CREATE TABLE Exame (
   IdExame SERIAL PRIMARY KEY,
   Resultado TEXT NOT NULL,
-  Tipo VARCHAR(10)
+  Tipo VARCHAR(10) UNIQUE
 );
 
 CREATE TYPE doctype AS ENUM ('cns', 'cpf');
 CREATE TABLE Profissional (
   Nome VARCHAR(50) NOT NULL,
   TipoDocumento doctype NOT NULL,
-  NumeroRegistroConselho VARCHAR(15) NOT NULL,
-  NumeroDocumento VARCHAR(15) NOT NULL,
+  NumeroRegistroConselho VARCHAR(15) UNIQUE NOT NULL,
+  NumeroDocumento VARCHAR(15) UNIQUE NOT NULL,
   IdProfissional SERIAL PRIMARY KEY
 );
 
 CREATE TABLE Clinica (
-  Nome VARCHAR(30) NOT NULL,
+  Nome VARCHAR(30) UNIQUE NOT NULL,
   CodigoClinica SERIAL PRIMARY KEY
 );
 
@@ -84,7 +84,7 @@ CREATE TABLE Doenca (
 
 CREATE TABLE Procedimento (
   CodigoProcedimento SERIAL PRIMARY KEY,
-  Descricao VARCHAR(20) NOT NULL
+  Descricao VARCHAR(20) UNIQUE NOT NULL
 );
 
 CREATE TABLE Estabelecimento (
@@ -95,7 +95,7 @@ CREATE TABLE Estabelecimento (
 CREATE TABLE Internacao (
   IdInternacao SERIAL,
   DataAutorizacao DATE NOT NULL,
-  NumeroAutorizacao VARCHAR(20) NOT NULL,
+  NumeroAutorizacao VARCHAR(20) UNIQUE NOT NULL,
   CodigoOrgaoEmissorAutorizacao VARCHAR(10) NOT NULL,
   Condicoes TEXT NOT NULL,
   DiagnosticoInicial VARCHAR(30),
