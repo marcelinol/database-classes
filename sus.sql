@@ -1,80 +1,79 @@
--- Geração de Modelo físico
--- Sql ANSI 2003 - brModelo.
+-- Luciano Medeiros Marcelino - Matricula UFSC 14101386
 
 CREATE TABLE EstadoFederativo (
   CodigoUFIBGE SMALLINT PRIMARY KEY,
-  Nome VARCHAR(25)
+  Nome VARCHAR(25) NOT NULL
 );
 
 CREATE TABLE Municipio (
-  Nome VARCHAR(40),
+  Nome VARCHAR(40) NOT NULL,
   CodigoMunicipioIBGE BIGINT PRIMARY KEY,
-  CodigoUFIBGE SMALLINT,
+  CodigoUFIBGE SMALLINT NOT NULL,
   FOREIGN KEY(CodigoUFIBGE) REFERENCES EstadoFederativo(CodigoUFIBGE) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 CREATE TABLE Bairro (
   IdBairro SERIAL PRIMARY KEY,
-  Nome VARCHAR(30),
-  CodigoMunicipioIBGE BIGINT,
+  Nome VARCHAR(30) NOT NULL,
+  CodigoMunicipioIBGE BIGINT NOT NULL,
   FOREIGN KEY(CodigoMunicipioIBGE) REFERENCES Municipio(CodigoMunicipioIBGE) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 CREATE TABLE Logradouro (
   CEP VARCHAR(10) PRIMARY KEY,
-  Nome VARCHAR(50),
-  IdBairro SERIAL,
+  Nome VARCHAR(50) NOT NULL,
+  IdBairro SERIAL NOT NULL,
   FOREIGN KEY(IdBairro) REFERENCES Bairro (IdBairro) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 CREATE TABLE Exame (
   IdExame SERIAL PRIMARY KEY,
-  Tipo VARCHAR(10),
-  Resultado TEXT
+  Resultado TEXT NOT NULL,
+  Tipo VARCHAR(10)
 );
 
 CREATE TYPE doctype AS ENUM ('cns', 'cpf');
 CREATE TABLE Profissional (
-  Nome VARCHAR(50),
-  TipoDocumento doctype,
-  NumeroRegistroConselho VARCHAR(15),
-  NumeroDocumento VARCHAR(15),
+  Nome VARCHAR(50) NOT NULL,
+  TipoDocumento doctype NOT NULL,
+  NumeroRegistroConselho VARCHAR(15) NOT NULL,
+  NumeroDocumento VARCHAR(15) NOT NULL,
   IdProfissional SERIAL PRIMARY KEY
 );
 
 CREATE TABLE Clinica (
-  Nome VARCHAR(30),
+  Nome VARCHAR(30) NOT NULL,
   CodigoClinica SERIAL PRIMARY KEY
 );
 
 CREATE TABLE Seguradora (
   CNPJ VARCHAR(14) PRIMARY KEY,
-  Nome VARCHAR(30)
+  Nome VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE Empregadora (
   CNPJ VARCHAR(14) PRIMARY KEY,
-  CNAE VARCHAR(7),
-  Nome VARCHAR(30)
+  CNAE VARCHAR(7) NOT NULL,
+  Nome VARCHAR(30) NOT NULL
 );
 
 CREATE TYPE genero AS ENUM('masculino', 'feminino');
 CREATE TABLE Paciente (
-  Nome VARCHAR(50),
-  Sexo genero,
-  Raca VARCHAR(10),
-  Etnia VARCHAR(10),
+  Nome VARCHAR(50) NOT NULL,
+  Sexo genero NOT NULL,
+  Raca VARCHAR(10) NOT NULL,
+  Etnia VARCHAR(10) NOT NULL,
   TelefoneExtra VARCHAR(10),
   NomeResponsavel VARCHAR(50),
   Telefone VARCHAR(13),
-  DataNascimento DATE,
+  DataNascimento DATE NOT NULL,
   IdPaciente SERIAL PRIMARY KEY,
-  CNS VARCHAR(15),
-  NumeroProntuario VARCHAR(20),
+  CNS VARCHAR(15) NOT NULL,
+  NumeroProntuario VARCHAR(20) NOT NULL,
   NomeMae VARCHAR(50),
-  NumeroResidencia VARCHAR(10),
+  NumeroResidencia VARCHAR(10) NOT NULL,
   ComplementoResidencia VARCHAR(20),
-  CEP VARCHAR(10),
+  CEP VARCHAR(10) NOT NULL,
   FOREIGN KEY(CEP) REFERENCES Logradouro (CEP) ON DELETE RESTRICT ON UPDATE RESTRICT
 );
 
@@ -85,11 +84,7 @@ CREATE TABLE Doenca (
 
 CREATE TABLE Procedimento (
   CodigoProcedimento SERIAL PRIMARY KEY,
-  Descricao VARCHAR(20),
-  CodigoClinica SERIAL,
-  IdProfissional SERIAL,
-  FOREIGN KEY(CodigoClinica) REFERENCES Clinica (CodigoClinica)ON UPDATE RESTRICT ON DELETE RESTRICT,
-  FOREIGN KEY(IdProfissional) REFERENCES Profissional (IdProfissional) ON UPDATE RESTRICT ON DELETE RESTRICT
+  Descricao VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE Estabelecimento (
@@ -98,26 +93,30 @@ CREATE TABLE Estabelecimento (
 );
 
 CREATE TABLE Internacao (
-  DataAutorizacao DATE,
-  NumeroAutorizacao VARCHAR(20),
-  CodigoOrgaoEmissorAutorizacao VARCHAR(10),
-  Condicoes TEXT,
   IdInternacao SERIAL,
+  DataAutorizacao DATE NOT NULL,
+  NumeroAutorizacao VARCHAR(20) NOT NULL,
+  CodigoOrgaoEmissorAutorizacao VARCHAR(10) NOT NULL,
+  Condicoes TEXT NOT NULL,
   DiagnosticoInicial VARCHAR(30),
-  Carater VARCHAR(20),
-  SinaisESintomas TEXT,
-  DataSolicitacaoProcedimento DATE,
-  IdPaciente SERIAL,
-  Cid VARCHAR(6),
-  CodigoProcedimento SERIAL,
-  IdProfissional SERIAL,
-  CNESSolicitante VARCHAR(7),
-  CNESExecutor VARCHAR(7),
+  Carater VARCHAR(20) NOT NULL,
+  SinaisESintomas TEXT NOT NULL,
+  DataSolicitacaoProcedimento DATE NOT NULL,
+  IdPaciente SERIAL NOT NULL,
+  Cid VARCHAR(6) NOT NULL,
+  CodigoProcedimento SERIAL NOT NULL,
+  CNESSolicitante VARCHAR(7) NOT NULL,
+  CNESExecutor VARCHAR(7) NOT NULL,
+  IdProfissionalAutorizador SERIAL NOT NULL,
+  IdProfissionalSolicitante SERIAL NOT NULL,
+  CodigoClinicaProcedimento SERIAL NOT NULL,
   PRIMARY KEY(IdInternacao),
+  FOREIGN KEY(CodigoClinicaProcedimento) REFERENCES Clinica (CodigoClinica)ON UPDATE RESTRICT ON DELETE RESTRICT,
   FOREIGN KEY(IdPaciente) REFERENCES Paciente (IdPaciente) ON UPDATE RESTRICT ON DELETE RESTRICT,
   FOREIGN KEY(Cid) REFERENCES Doenca (Cid) ON UPDATE RESTRICT ON DELETE RESTRICT,
   FOREIGN KEY(CodigoProcedimento) REFERENCES Procedimento (CodigoProcedimento) ON UPDATE RESTRICT ON DELETE RESTRICT,
-  FOREIGN KEY(IdProfissional) REFERENCES Profissional (IdProfissional) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  FOREIGN KEY(IdProfissionalAutorizador) REFERENCES Profissional (IdProfissional) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  FOREIGN KEY(IdProfissionalSolicitante) REFERENCES Profissional (IdProfissional) ON UPDATE RESTRICT ON DELETE RESTRICT,
   FOREIGN KEY(CNESSolicitante) REFERENCES Estabelecimento (CNES) ON UPDATE RESTRICT ON DELETE RESTRICT,
   FOREIGN KEY(CNESExecutor) REFERENCES Estabelecimento (CNES) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
@@ -125,6 +124,7 @@ CREATE TABLE Internacao (
 CREATE TABLE CidSecundario (
   Cid VARCHAR(6),
   IdInternacao INTEGER,
+  PRIMARY KEY(Cid,IdInternacao),
   FOREIGN KEY(Cid) REFERENCES Doenca (Cid),
   FOREIGN KEY(IdInternacao) REFERENCES Internacao (IdInternacao) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
@@ -132,6 +132,7 @@ CREATE TABLE CidSecundario (
 CREATE TABLE CidCausas (
   Cid VARCHAR(6),
   IdInternacao SERIAL,
+  PRIMARY KEY(Cid,IdInternacao),
   FOREIGN KEY(Cid) REFERENCES Doenca (Cid) ON UPDATE RESTRICT ON DELETE RESTRICT,
   FOREIGN KEY(IdInternacao) REFERENCES Internacao (IdInternacao) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
@@ -139,6 +140,7 @@ CREATE TABLE CidCausas (
 CREATE TABLE ExamesDaInternacao (
   IdExame SERIAL,
   IdInternacao SERIAL,
+  PRIMARY KEY(IdExame, IdInternacao),
   FOREIGN KEY(IdExame) REFERENCES Exame (IdExame) ON UPDATE RESTRICT ON DELETE RESTRICT,
   FOREIGN KEY(IdInternacao) REFERENCES Internacao (IdInternacao) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
@@ -147,12 +149,12 @@ CREATE TYPE vinculoprev AS ENUM('empregado', 'empregador', 'autonomo', 'desempre
 CREATE TYPE tipoacidente AS ENUM('transito', 'trabalho tipico', 'trabalho trajeto');
 CREATE TABLE Acidente (
   IdAcidente SERIAL PRIMARY KEY,
-  VinculoPrevidencia vinculoprev,
-  Tipo tipoacidente,
+  VinculoPrevidencia vinculoprev NOT NULL,
+  Tipo tipoacidente NOT NULL,
   NumeroBilheteSeguradora VARCHAR(20),
   SerieBilheteSeguradora VARCHAR(20),
   CBOREmpresa VARCHAR(20),
-  IdInternacao SERIAL,
+  IdInternacao SERIAL NOT NULL,
   CNPJSeguradora VARCHAR(14),
   CNPJEmpregadora VARCHAR(14),
   FOREIGN KEY(CNPJSeguradora) REFERENCES Seguradora (CNPJ) ON DELETE RESTRICT ON UPDATE RESTRICT,
