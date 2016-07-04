@@ -1,0 +1,7 @@
+dataautorizacao,numeroautorizacao,codigoorgaoemissorautorizacao,condicoes,diagnosticoinicial,carater,sinaisesintomas,datasolicitacaoprocedimento,idpaciente,cid,codigoprocedimento,cnessolicitante,cnesexecutor,idprofissionalautorizador,idprofissionalsolicitante,codigoclinicaprocedimento
+01-02-2015,123123,001,muito triste,depressao,psicologico,choro,01-01-2015,1,A00,1,0040312,1033982,1,2,1
+01-15-2016,543054,002,paciente sentindo muita dor,dor de barriga,observacao,dores na regiao abdominal,01-01-2016,2,A01.0,2,0000002,1033982,2,5,2
+02-03-2015,036456,001,nada a declara,cancer,pre-operatorio,"tumor, vomitos e fraqueza",01-02-2015,3,A35,3,0000001,0000002,3,5,2
+02-01-2016,321321,004,paciente esta desolado,frescura,observacao,choro,02-01-2016,4,A18.5,3,0000002,1033982,3,4,1
+10-01-2016,003213,005,paciente quase morrendo,paciente baleado,pre-operatorio,projetil na face,04-01-2016,5,A00,5,0040312,0000002,3,3,3
+06-11-2015,321333,001,mais triste ainda,depressao,psicologico,muito choro,05-28-2015,1,A00,1,0040312,1033982,3,2,1
