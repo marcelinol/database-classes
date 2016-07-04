@@ -29,7 +29,7 @@ CREATE TABLE Logradouro (
 CREATE TABLE Exame (
   IdExame SERIAL PRIMARY KEY,
   Resultado TEXT NOT NULL,
-  Tipo VARCHAR(10) UNIQUE
+  Tipo VARCHAR(20) UNIQUE
 );
 
 CREATE TYPE doctype AS ENUM ('cns', 'cpf');
@@ -59,15 +59,15 @@ CREATE TABLE Empregadora (
 
 CREATE TYPE genero AS ENUM('masculino', 'feminino');
 CREATE TABLE Paciente (
+  IdPaciente SERIAL PRIMARY KEY,
   Nome VARCHAR(50) NOT NULL,
   Sexo genero NOT NULL,
   Raca VARCHAR(10) NOT NULL,
   Etnia VARCHAR(10) NOT NULL,
+  Telefone VARCHAR(13),
   TelefoneExtra VARCHAR(10),
   NomeResponsavel VARCHAR(50),
-  Telefone VARCHAR(13),
   DataNascimento DATE NOT NULL,
-  IdPaciente SERIAL PRIMARY KEY,
   CNS VARCHAR(15) NOT NULL,
   NumeroProntuario VARCHAR(20) NOT NULL,
   NomeMae VARCHAR(50),
@@ -118,12 +118,13 @@ CREATE TABLE Internacao (
   FOREIGN KEY(IdProfissionalAutorizador) REFERENCES Profissional (IdProfissional) ON UPDATE RESTRICT ON DELETE RESTRICT,
   FOREIGN KEY(IdProfissionalSolicitante) REFERENCES Profissional (IdProfissional) ON UPDATE RESTRICT ON DELETE RESTRICT,
   FOREIGN KEY(CNESSolicitante) REFERENCES Estabelecimento (CNES) ON UPDATE RESTRICT ON DELETE RESTRICT,
-  FOREIGN KEY(CNESExecutor) REFERENCES Estabelecimento (CNES) ON UPDATE RESTRICT ON DELETE RESTRICT
+  FOREIGN KEY(CNESExecutor) REFERENCES Estabelecimento (CNES) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT autorizacao_mais_recente_que_solicitacao CHECK (DataAutorizacao >= DataSolicitacaoProcedimento)
 );
 
 CREATE TABLE CidSecundario (
   Cid VARCHAR(6),
-  IdInternacao INTEGER,
+  IdInternacao SERIAL,
   PRIMARY KEY(Cid,IdInternacao),
   FOREIGN KEY(Cid) REFERENCES Doenca (Cid),
   FOREIGN KEY(IdInternacao) REFERENCES Internacao (IdInternacao) ON UPDATE RESTRICT ON DELETE RESTRICT
