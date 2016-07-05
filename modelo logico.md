@@ -7,7 +7,6 @@ cidcausas(#Cid, #IdInternacao)
 
 cidsecundario(#Cid, #IdInternacao)
 
-
 clinica(CodigoClinica, Nome)
 
 doenca(Cid, Descricao)
@@ -22,7 +21,7 @@ exame(IdExame, Tipo, Resultado)
 
 examesdainternacao(#IdExame, #IdInternacao)
 
-internacao(IdInternacao, DataAutorizacao, NumeroAutorizacao, CodigoOrgaoEmissorAutorizacao, Condicoes, DiagnosticoInicial, Carater, SinaisESintomas, DataSolicitacaoProcedimento, #IdPaciente, #Cid, #CodigoProcedimento, #IdProfissionalSolicitante, #CNESSolicitante, #CNESExecutor, #IdProfissionalAutorizador, #CodigoClinicaProcedimento)
+internacao(IdInternacao, DataAutorizacao, NumeroAutorizacao, CodigoOrgaoEmissorAutorizacao, Condicoes, DiagnosticoInicial, Carater, SinaisESintomas, DataSolicitacaoProcedimento, #IdPaciente, #Cid, #CodigoProcedimento, #IdProfissionalSolicitante, #CNESSolicitante, #CNESExecutor, #IdProfissionalAutorizador, #CodigoClinicaProcedimento, #IdAcidente)
 
 logradouro(CEP, Nome, #IdBairro)
 

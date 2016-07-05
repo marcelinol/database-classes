@@ -13,3 +13,9 @@ doencas tiradas do site: http://www.bulas.med.br/cid-10
 
 adicional
 - Extraí Exame para outra tabela porque o mesmo exame pode ser útil para 2 internações diferentes (do mesmo paciente)
+
+<!--
+\c aula_pratica
+drop database sus;
+create database sus;
+\c sus -->
